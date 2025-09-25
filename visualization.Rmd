@@ -8,4 +8,128 @@ output: html_document
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(ggridges)
+library(p8105.datasets)
 ```
+
+Import the weather data.
+
+```{r}
+data("weather_df")
+```
+
+Making our first plot.
+
+```{r}
+ggplot(weather_df, mapping = aes(x = tmin, y = tmax)) +
+  geom_point()
+
+```
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point()
+
+```
+
+```{r}
+ggp_weather_scatterplot = 
+  weather_df |> 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point()
+
+ggp_weather_scatterplot
+
+```
+
+Check that some rows are missing.
+
+```{r}
+weather_df |> 
+  filter(is.na(tmax))
+
+```
+
+## Fancier scatterplot
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(se = FALSE)
+
+```
+
+Where you define aesthetics can matter
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name), alpha = 0.3, size = 0.8) +
+  geom_smooth(se = FALSE)
+
+```
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name, size = prcp), alpha = 0.3) +
+  geom_smooth(se = FALSE)
+
+```
+
+Use facetting real quick
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name), alpha = 0.3, size = 0.8) +
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name)  ## row ~ column
+
+```
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name), alpha = 0.3, size = 0.8) +
+  geom_smooth(se = FALSE) +
+  facet_grid(name ~ .)
+
+```
+
+Let's make a somewhat interesting scatterplot.
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = name, shape = name)) +
+  geom_point(aes(size = prcp), alpha = 0.3) +
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name)
+
+```
+
+Learning Assessment 1
+
+```{r}
+weather_df |> 
+  filter(name == "CentralPark_NY") |>   ## REMEMBER HOW TO FILTER!!
+  mutate(
+    tmax_fah = tmax * (9 / 5) + 32,
+    tmin_fah = tmin * (9 / 5) + 32
+  ) |> 
+  ggplot(aes(x = tmin_fah, y = tmax_fah)) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = "lm")
+
+```
+
+## Small Things
+
+
+
+
+
+
+
+
