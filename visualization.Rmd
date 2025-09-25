@@ -126,10 +126,149 @@ weather_df |>
 
 ## Small Things
 
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = name, shape = name)) +
+#  geom_point(alpha = 0.3) +
+  geom_smooth(se = FALSE) 
+
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = name, shape = name)) +
+  geom_smooth(se = FALSE) +
+  geom_point()
+```
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_hex()
+
+```
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(color = "purple")
+
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(color = "#086bfd")
+```
+
+## Univariate plots
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin)) +
+  geom_histogram(color = "white", fill = "red")
+
+```
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, color = name)) +
+  geom_histogram()
+
+weather_df |> 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_histogram()
+
+```
+
+How would I fix this? Maybe facet?
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_histogram() +
+  facet_grid(name ~ .)
+
+```
+
+Maybe a demsity plot?
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_density(alpha = 0.2)
+
+```
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = name, y = tmin)) +
+  geom_boxplot(aes(fill = name))
+
+```
+
+violin plots
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = name, y = tmin, fill = name)) +
+  geom_violin()
+
+```
+
+ridge plots
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = name, fill = name)) +
+  geom_density_ridges()
+
+```
+
+LA Univariate plots
+
+Learning Assessment 2
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = prcp, fill = name)) +
+  geom_density()
+
+weather_df |> 
+  ggplot(aes(x = prcp, fill = name)) +
+  geom_histogram() +
+  facet_grid(name ~ .)
+
+weather_df |> 
+  filter(prcp > 5, prcp < 1000) |> 
+  ggplot(aes(x = prcp, fill = name)) +
+  geom_density()
+
+```
+
+```{r}
 
 
+```
 
+## Saving and embedding plots
 
+saving plots
+
+```{r}
+ggp_weather = 
+  weather_df |> 
+  ggplot(aes(x = name, y = tmin, fill = name)) +
+  geom_violin()
+
+ggp_weather
+
+ggsave("plots/violin_plot.pdf", ggp_weather,
+       width = 8, height = 6)   ## These are optional (width & height)
+
+```
+
+embedding plots
+
+```{r, fig.width = 6, fig.height = 4}
+
+ggp_weather
+
+```
 
 
 
