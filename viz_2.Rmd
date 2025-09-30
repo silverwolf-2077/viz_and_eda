@@ -61,6 +61,63 @@ weather_df |>
   )
 ```
 
+## Themes
+
+Make my base plot
+
+```{r}
+ggp_temperature = 
+  weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name), alpha = 0.5) +
+  labs(
+    x = "Minimum daily temp", 
+    y = "Maximum daily temp", 
+    title = "Temperature scatterplot", 
+    caption = "Data from NOAA",
+    color = "Location"
+  ) +
+  scale_x_continuous(
+    breaks = c(-20, 0, 25),
+    labels = c("-20C", "0", "25")
+  ) +
+  viridis::scale_color_viridis(
+    name = "Location", 
+    discrete = TRUE
+  )
+
+ggsave("weather_scatterplot.png", ggp_temperature)
+```
+
+Update my base plot
+
+```{r}
+ggp_temperature +
+  theme_minimal() + # theme_minimal() needs to be first because it resets everything
+  theme(legend.position = "bottom")
+```
+
+## Adding data in geoms
+
+```{r}
+central_park_df = 
+  weather_df |> 
+  filter(name =="CentralPark_NY")
+
+molokai_df = 
+  weather_df |> 
+  filter(name=="Molokai_HI")
+
+ggplot(data = molokai_df, aes(x = date, y = tmax, color = name)) +
+  geom_point() +
+  geom_line(data = central_park_df)
+
+```
+
+
+
+
+
 
 
 
