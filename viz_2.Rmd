@@ -202,7 +202,7 @@ litters_df =
   separate(group, into = c("dose", "tx_day"), sep = 3)
 
 fas_df = 
-  left_join(pups_df, litters_df)
+  left_join(pups_df, litters_df, by = "litter_number")
 
 fas_df |> 
   select(pd_ears:tx_day) |> 

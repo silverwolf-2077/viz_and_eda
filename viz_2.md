@@ -278,12 +278,8 @@ litters_df =
 
 ``` r
 fas_df = 
-  left_join(pups_df, litters_df)
-```
+  left_join(pups_df, litters_df, by = "litter_number")
 
-    ## Joining with `by = join_by(litter_number)`
-
-``` r
 fas_df |> 
   select(pd_ears:tx_day) |> 
   pivot_longer(
