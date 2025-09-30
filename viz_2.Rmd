@@ -1,0 +1,68 @@
+---
+title: "viz_2"
+author: "Ruihan Ding"
+date: "2025-09-30"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(patchwork)
+library(p8105.datasets)
+```
+
+Import the weather data.
+
+```{r}
+data("weather_df")
+```
+
+Let's make a basic scatterplot
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name), alpha = 0.5) +
+  labs(
+    x = "Minimum daily temp", 
+    y = "Maximum daily temp", 
+    title = "Temperature scatterplot", 
+    caption = "Data from NOAA",
+    color = "Location"
+  )
+```
+
+## Scales
+
+```{r}
+weather_df |>
+  filter(tmax > 10, tmin < 30) |> 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name), alpha = 0.5) +
+  labs(
+    x = "Minimum daily temp", 
+    y = "Maximum daily temp", 
+    title = "Temperature scatterplot", 
+    caption = "Data from NOAA",
+    color = "Location"
+  ) +
+  scale_x_continuous(
+    breaks = c(-20, 0, 25),
+    labels = c("-20C", "0", "25")
+  ) +
+  scale_y_continuous(
+    trans = "sqrt",
+    limits = c(10, 30) # or filter(tmax > 10, tmin < 30) from the start
+  ) +
+  # scale_color_hue(h = c(100, 300)) or
+  viridis::scale_color_viridis(
+    name = "Location", 
+    discrete = TRUE
+  )
+```
+
+
+
+
+
+
