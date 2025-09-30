@@ -114,9 +114,110 @@ ggplot(data = molokai_df, aes(x = date, y = tmax, color = name)) +
 
 ```
 
+## `patchwork`
 
+Make three plots and combine using patchwork.
 
+```{r}
+ggp_tmax_tmin = 
+  weather_df |> 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.5) +
+  theme(legend.position = "none")
 
+ggp_prec_density = 
+  weather_df |>
+  filter(prcp > 0) |> 
+  ggplot(aes(x = prcp, fill = name)) +
+  geom_density(alpha = 0.5) +
+  theme(legend.position = "none")
+
+ggp_temp_season = 
+  weather_df |> 
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se = FALSE) +
+  theme(legend.position = "none")
+
+(ggp_tmax_tmin + ggp_prec_density)/ggp_temp_season
+```
+
+## Data manipulation
+
+Let's make temperature violin plots.
+
+```{r}
+weather_df |>
+  mutate(name = fct_relevel(
+    name, c("Molokai_HI", "Central_Park_NY", "Waterhole_WA"))) |> 
+  ggplot(aes(x = name, y = tmax, fill = name)) +
+  geom_violin(alpha = 0.5)
+
+```
+
+```{r}
+weather_df |> 
+  mutate(name = fct_reorder(name, tmax)) |> 
+  ggplot(aes(x = name, y = tmax, fill = name)) +
+  geom_violin(alpha = 0.5)
+```
+
+What about data tidiness
+
+```{r}
+pulse_df = 
+  haven::read_sas("data/public_pulse_data.sas7bdat") |> 
+  janitor::clean_names() |> 
+  pivot_longer(
+    bdi_score_bl:bdi_score_12m,
+    names_to = "visit",
+    names_prefix = "bdi_score_",
+    values_to = "bdi"
+  ) |> 
+  mutate(visit = fct_inorder(visit))
+
+pulse_df |> 
+  ggplot(aes(x = visit, y = bdi)) +
+  geom_boxplot()
+
+```
+
+Make a plot for the FAS study.
+
+```{r}
+pups_df = 
+  read_csv("data/FAS_pups.csv", na = c("NA", ".", ""), skip = 3) |> 
+  janitor::clean_names() |> 
+  mutate(
+    sex = case_match(
+      sex,
+      1 ~ "male",
+      2 ~ "female"
+    )
+  )
+
+litters_df = 
+  read_csv("data/FAS_litters.csv", na = c("NA", ".", "")) |> 
+  janitor::clean_names() |>
+  separate(group, into = c("dose", "tx_day"), sep = 3)
+
+fas_df = 
+  left_join(pups_df, litters_df)
+
+fas_df |> 
+  select(pd_ears:tx_day) |> 
+  pivot_longer(
+    pd_ears:pd_walk,
+    names_to = "outcome", 
+    names_prefix = "pd_", 
+    values_to = "pn_day"
+  ) |> 
+  mutate(outcome = fct_reorder(outcome, pn_day)) |> 
+  drop_na() |> 
+  ggplot(aes(x = dose, y = pn_day)) +
+  geom_violin() +
+  facet_grid(tx_day ~ outcome)
+```
 
 
 
