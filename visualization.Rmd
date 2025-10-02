@@ -2,7 +2,7 @@
 title: "visualization"
 author: "Ruihan Ding"
 date: "2025-09-25"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
