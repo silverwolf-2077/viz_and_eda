@@ -95,6 +95,101 @@ weather_df |>
   count(name)
 ```
 
+Let's make something more intersting
+
+```{r}
+weather_df |> 
+  group_by(name, month) |> 
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE),
+    median_tmin = median(tmin, na.rm = TRUE),
+    sd_prcp = sd(prcp, na.rm = TRUE)
+  )
+```
+
+This is still a data frame
+
+```{r}
+weather_df |> 
+  group_by(name, month) |> 
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE)
+  ) |> 
+  ggplot(aes(x = month, y = mean_tmax, color = name)) +
+  geom_point() +
+  geom_line()
+```
+
+```{r}
+weather_df |> 
+  group_by(name, month) |> 
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE)
+  ) |> 
+  pivot_wider(
+    names_from = name, 
+    values_from = mean_tmax
+  ) |> 
+  knitr::kable(digits = 2)
+```
+
+## mutate with groups
+
+```{r}
+weather_df |> 
+  group_by(name) |> 
+  mutate(
+    mean_tmax = mean(tmax, na.rm = TRUE),
+    center_tmax = tmax - mean_tmax
+  ) |> 
+  ggplot(aes(x = date, y = center_tmax, color = name)) +
+  geom_point()
+```
+
+Look for cold days
+
+```{r}
+weather_df |> 
+  group_by(name, month) |> 
+  mutate(temp_rank = min_rank(desc(tmin))) |> 
+  filter(temp_rank < 2)
+```
+
+What about lags?
+
+```{r}
+weather_df |> 
+  group_by(name) |> 
+  mutate(lagged_tmax = lag(tmax))
+```
+
+Use the vatiables you create
+
+```{r}
+weather_df |> 
+  group_by(name) |> 
+  mutate(
+    temp_change = tmax - lag(tmax)
+  ) |> 
+  summarize(
+    sd_tmax_change = sd(temp_change, na.rm = TRUE),
+    tmax_change_max = max(temp_change, na.rm = TRUE)
+  )
+```
+
+```{r}
+weather_df |> 
+  group_by(name) |> 
+  mutate(
+    temp_change = tmax - lag(tmax),
+    change_rank = min_rank(temp_change)
+  ) |> 
+  filter(
+    min_rank(desc(temp_change)) < 2
+  )
+```
+
+
 
 
 
