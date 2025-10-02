@@ -2,13 +2,100 @@
 title: "EDA"
 author: "Ruihan Ding"
 date: "2025-10-02"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+
+# from setting options
+
 library(p8105.datasets)
 ```
+
+Import the weather data
+
+```{r}
+data("weather_df")
+
+weather_df = 
+  weather_df |> 
+  mutate(month = floor_date(date, unit = "month"))
+```
+
+Make plots
+
+```{r}
+weather_df |> 
+  ggplot(aes(x = prcp)) +
+  geom_histogram()
+```
+
+Check on extreme values
+
+```{r}
+weather_df |> 
+  filter(prcp > 1000)
+```
+
+Look at data again
+
+```{r}
+weather_df |> 
+  filter(tmax >= 20, tmax <= 30) |> 
+  ggplot(aes(x = tmin, y = tmax, color = name, shape = name)) +
+  geom_point()
+```
+
+## Add groups
+
+```{r}
+weather_df |> 
+  group_by(name, month)
+```
+
+Group nd count things
+
+```{r}
+weather_df |> 
+  group_by(name) |> 
+  summarize(
+    n = n()
+  )
+```
+
+```{r}
+weather_df |> 
+  group_by(month) |> 
+  summarize(
+    n = n_distinct(date)
+  )
+```
+
+You can count directly
+
+```{r}
+weather_df |> 
+  count(name)
+```
+
+
 
 
 
