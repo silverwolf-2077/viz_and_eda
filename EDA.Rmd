@@ -1,0 +1,14 @@
+---
+title: "EDA"
+author: "Ruihan Ding"
+date: "2025-10-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(p8105.datasets)
+```
+
+
+
