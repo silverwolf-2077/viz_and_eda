@@ -76,7 +76,7 @@ weather_df |>
     ## 10 CentralPark_NY USW00094728 2021-01-10     0   5    -1.6 2021-01-01
     ## # ℹ 2,180 more rows
 
-Group nd count things
+Group and count things
 
 ``` r
 weather_df |> 
@@ -330,3 +330,33 @@ weather_df |>
     ## 2 Molokai… USW0… 2021-01-19     0  27.8  21.1 2021-01-01         5.6         726
     ## 3 Molokai… USW0… 2022-11-29     0  27.8  19.4 2022-11-01         5.6         726
     ## 4 Waterho… USS0… 2022-12-22    76   1.5 -17.2 2022-12-01        11.1         708
+
+## Learning assessment
+
+``` r
+pulse_df = 
+  haven::read_sas("data/public_pulse_data.sas7bdat") |> 
+  janitor::clean_names() |> 
+  pivot_longer(
+    bdi_score_bl:bdi_score_12m,
+    names_to = "visit",
+    names_prefix = "bdi_score_",
+    values_to = "bdi"
+  ) |> 
+  mutate(visit = fct_inorder(visit))
+
+pulse_df |> 
+  group_by(visit) |>
+  summarize(
+    mean_bdi = mean(bdi, na.rm = TRUE),
+    median_bdi = median(bdi, na.rm = TRUE)
+  ) |> 
+  knitr::kable(digits = 2)
+```
+
+| visit | mean_bdi | median_bdi |
+|:------|---------:|-----------:|
+| bl    |     7.99 |          6 |
+| 01m   |     6.05 |          4 |
+| 06m   |     5.67 |          4 |
+| 12m   |     6.10 |          4 |

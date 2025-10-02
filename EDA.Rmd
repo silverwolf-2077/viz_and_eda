@@ -70,7 +70,7 @@ weather_df |>
   group_by(name, month)
 ```
 
-Group nd count things
+Group and count things
 
 ```{r}
 weather_df |> 
@@ -187,6 +187,29 @@ weather_df |>
   filter(
     min_rank(desc(temp_change)) < 2
   )
+```
+
+## Learning assessment
+
+```{r}
+pulse_df = 
+  haven::read_sas("data/public_pulse_data.sas7bdat") |> 
+  janitor::clean_names() |> 
+  pivot_longer(
+    bdi_score_bl:bdi_score_12m,
+    names_to = "visit",
+    names_prefix = "bdi_score_",
+    values_to = "bdi"
+  ) |> 
+  mutate(visit = fct_inorder(visit))
+
+pulse_df |> 
+  group_by(visit) |>
+  summarize(
+    mean_bdi = mean(bdi, na.rm = TRUE),
+    median_bdi = median(bdi, na.rm = TRUE)
+  ) |> 
+  knitr::kable(digits = 2)
 ```
 
 
